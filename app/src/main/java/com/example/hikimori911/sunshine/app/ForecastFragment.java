@@ -1,14 +1,20 @@
 package com.example.hikimori911.sunshine.app;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,10 +30,20 @@ import java.util.List;
  * Created by hikimori911 on 08.02.2015.
  */
 public class ForecastFragment extends Fragment {
+
+    public static final String SERVER_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
+
     public ForecastFragment() {
     }
 
     protected ListView forecastList;
+    protected ArrayAdapter<String> mForecastAdapter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,31 +55,63 @@ public class ForecastFragment extends Fragment {
                 "Tomorrow - Rainy - 88/63"
         };
         List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
-        ArrayAdapter<String> mForecastAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);
+        mForecastAdapter = new ArrayAdapter<String>(getActivity(),R.layout.list_item_forecast,R.id.list_item_forecast_textview,weekForecast);
         forecastList = (ListView)rootView.findViewById(R.id.listview_forecast);
         forecastList.setAdapter(mForecastAdapter);
-
         return rootView;
     }
 
-    public static class FetchWeatherTask extends AsyncTask<String, Void, String>{
+    @Override
+    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.forecastfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                new FetchWeatherTask().execute("94043");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public class FetchWeatherTask extends AsyncTask<String, Void, String[]>{
 
         private final String TAG = FetchWeatherTask.class.getSimpleName();
 
-        protected String doInBackground(String... urls) {
+        protected String[] doInBackground(String... urls) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
+            if(urls.length == 0){
+                return null;
+            }
+
+            String defaultFormat = "json";
+            String defaultUnits = "metric";
+            int days = 7;
+
             // Will contain the raw JSON response as a string.
             String forecastJsonStr = null;
+
+            Uri.Builder builder = Uri.parse(SERVER_URL).buildUpon()
+                    .appendQueryParameter("q",urls[0])
+                    .appendQueryParameter("mode", urls.length > 1 ? urls[1] : defaultFormat)
+                    .appendQueryParameter("units",urls.length > 2 ? urls[2] : defaultUnits)
+                    .appendQueryParameter("cnt",urls.length > 3 ? urls[3] : String.valueOf(days));
 
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = new URL("http://api.openweathermap.org/data/2.5/forecast/daily?q=94043&mode=json&units=metric&cnt=7");
+
+                URL url = new URL(builder.build().toString());
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -109,15 +157,25 @@ public class ForecastFragment extends Fragment {
                     }
                 }
             }
-            return forecastJsonStr;
+            try {
+                if(forecastJsonStr!=null) {
+                    return WeatherDataParser.getWeatherDataFromJson(forecastJsonStr, days);
+                }
+            } catch (JSONException e) {
+                Log.e(TAG, e.getMessage(), e);
+                e.printStackTrace();
+            }
+            return null;
         }
 
-        protected void onProgressUpdate(Integer... progress) {
-
-        }
-
-        protected void onPostExecute(String result) {
-
+        protected void onPostExecute(String[] result) {
+            if (result != null){
+                mForecastAdapter.clear();
+                for (int i = 0; i < result.length; i++) {
+                    mForecastAdapter.add(result[i]);
+                }
+                mForecastAdapter.notifyDataSetChanged();
+            }
         }
     }
 }
