@@ -4,6 +4,11 @@ package com.example.hikimori911.sunshine.app;
  * Created by hikimori911 on 11.02.2015.
  */
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +32,17 @@ public class WeatherDataParser {
     /**
      * Prepare the weather high/lows for presentation.
      */
-    public static String formatHighLows(double high, double low) {
+    public static String formatHighLows(double high, double low, Context ctx, String tag) {
         // For presentation, assume the user doesn't care about tenths of a degree.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        String type = prefs.getString(ctx.getString(R.string.pref_units_key),ctx.getString(R.string.pref_units_type_metric));
+        if(type.equals(ctx.getString(R.string.pref_units_type_imperial))){
+            high = (high * 1.8) + 32;
+            low = (low * 1.8) + 32;
+        }else if(!type.equals(ctx.getString(R.string.pref_units_type_metric))){
+            Log.e(tag,"Unknown units type");
+        }
+
         long roundedHigh = Math.round(high);
         long roundedLow = Math.round(low);
 
@@ -43,7 +57,7 @@ public class WeatherDataParser {
      * Fortunately parsing is easy:  constructor takes the JSON string and converts it
      * into an Object hierarchy for us.
      */
-    public static String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+    public static String[] getWeatherDataFromJson(String forecastJsonStr, int numDays, Context ctx, String tag)
             throws JSONException {
 
         // These are the names of the JSON objects that need to be extracted.
@@ -84,7 +98,7 @@ public class WeatherDataParser {
             double high = temperatureObject.getDouble(OWM_MAX);
             double low = temperatureObject.getDouble(OWM_MIN);
 
-            highAndLow = formatHighLows(high, low);
+            highAndLow = formatHighLows(high, low, ctx, tag);
             resultStrs[i] = day + " - " + description + " - " + highAndLow;
         }
 
