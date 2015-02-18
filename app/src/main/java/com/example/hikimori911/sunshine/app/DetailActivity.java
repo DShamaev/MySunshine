@@ -3,7 +3,9 @@ package com.example.hikimori911.sunshine.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +15,10 @@ import android.widget.TextView;
 
 
 public class DetailActivity extends ActionBarActivity {
+
+    public static final String HASHTAG_SUFFIX = " #SunshineApp";
+
+    protected ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,19 @@ public class DetailActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
+
+        // Get the menu item.
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        if(getIntent()!=null) {
+            Bundle data = getIntent().getExtras();
+            Intent intent = new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT,
+                    new StringBuilder().append(data.getString(Intent.EXTRA_TEXT)).append(HASHTAG_SUFFIX).toString()
+            ).setType("text/plain");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            mShareActionProvider.setShareIntent(intent);
+        }
+
         return true;
     }
 
@@ -48,6 +67,12 @@ public class DetailActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    // Somewhere in the application.
+    public void doShare(Intent shareIntent) {
+        // When you want to share set the share intent.
+        mShareActionProvider.setShareIntent(shareIntent);
     }
 
     /**
