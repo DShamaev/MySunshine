@@ -42,7 +42,7 @@ public class WeatherContract {
         public static final String TABLE_NAME = "location";
 
         // Column with the foreign key into the location table.
-        public static final String COLUMN_LOCATION_SETTINGS = "location_settings";
+        public static final String COLUMN_LOCATION_SETTING = "location_settings";
         // Latitude, stored as float
         public static final String COLUMN_COORD_LAT = "coord_lat";
         // Longitude, stored as float
