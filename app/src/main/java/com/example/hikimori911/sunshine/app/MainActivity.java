@@ -6,11 +6,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    public static final boolean IS_DEBUG = true;
+    public static final String TAG = "MySunshine";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +25,50 @@ public class MainActivity extends ActionBarActivity {
                     .add(R.id.container, new ForecastFragment())
                     .commit();
         }
+        if(IS_DEBUG) {
+            Log.d(TAG, "OnCreate");
+        }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(IS_DEBUG) {
+            Log.d(TAG, "OnResume");
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(IS_DEBUG) {
+            Log.d(TAG, "OnPause");
+        }
+    }
+
+    @Override
+     protected void onDestroy() {
+        super.onDestroy();
+        if(IS_DEBUG) {
+            Log.d(TAG, "OnDestroy");
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(IS_DEBUG) {
+            Log.d(TAG, "OnStart");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(IS_DEBUG) {
+            Log.d(TAG, "OnStop");
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
