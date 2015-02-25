@@ -15,6 +15,7 @@
  */
 package com.example.hikimori911.sunshine.app.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
@@ -22,6 +23,13 @@ import android.test.AndroidTestCase;
 import java.util.HashSet;
 
 public class TestDb extends AndroidTestCase {
+
+    // Test data we're going to insert into the DB to see if it works.
+    String testLocationSetting = "99705";
+    String testCityName = "North Pole";
+    double testLatitude = 64.7488;
+    double testLongitude = -147.353;
+    static final long TEST_DATE = 1419033600L;  // December 20th, 2014
 
     public static final String LOG_TAG = TestDb.class.getSimpleName();
 
@@ -116,24 +124,39 @@ public class TestDb extends AndroidTestCase {
     */
     public long testLocationTable() {
         // First step: Get reference to writable database
-
+        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         // Create ContentValues of what you want to insert
         // (you can use the createNorthPoleLocationValues if you wish)
+        ContentValues testValues = new ContentValues();
 
         // Insert ContentValues into database and get a row ID back
-
+        testValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME,testCityName);
+        testValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT,testLatitude);
+        testValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG,testLongitude);
+        testValues.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,testLocationSetting);
+        long locationRowId;
+        locationRowId = db.insert(WeatherContract.LocationEntry.TABLE_NAME, null, testValues);
+        assertTrue("Error: Failure to insert test data", locationRowId != -1);
         // Query the database and receive a Cursor back
-
+        Cursor cursor = db.query(WeatherContract.LocationEntry.TABLE_NAME,null,
+                WeatherContract.LocationEntry._ID + "=?",
+                new String[]{String.valueOf(locationRowId)},
+                null,null,null);
         // Move the cursor to a valid database row
-
+        assertTrue("Error: Failure during move cursor", cursor.moveToFirst());
         // Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
-
+        assertTrue("Error: Failure to query test data",
+                cursor.getString(cursor.getColumnIndex(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING))
+                        .equals(testLocationSetting));
+        assertFalse("Error: Failure cursor has more than one entry", cursor.moveToNext());
         // Finally, close the cursor and database
-
+        cursor.close();
+        db.close();
         // Return the rowId of the inserted location, or "-1" on failure.
-        return -1L;
+        return locationRowId;
     }
 
 
@@ -146,25 +169,49 @@ public class TestDb extends AndroidTestCase {
     public void testWeatherTable() {
         // First insert the location, and then use the locationRowId to insert
         // the weather. Make sure to cover as many failure cases as you can.
-
         // We return the rowId of the inserted location in testLocationTable, so
         // you should just call that function rather than rewriting it
-
+        long locationId = testLocationTable();
+        assertFalse("Error: Problem with location insertion", locationId == -1L);
         // First step: Get reference to writable database
-
+        WeatherDbHelper dbHelper = new WeatherDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         // Create ContentValues of what you want to insert
         // (you can use the createWeatherValues TestUtilities function if you wish)
+        ContentValues weatherValues = new ContentValues();
 
         // Insert ContentValues into database and get a row ID back
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_LOC_KEY, locationId);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DATE, TEST_DATE);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_DEGREES, 1.1);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_HUMIDITY, 1.2);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_PRESSURE, 1.3);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP, 75);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP, 65);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC, "Asteroids");
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED, 5.5);
+        weatherValues.put(WeatherContract.WeatherEntry.COLUMN_WEATHER_ID, 321);
 
+        // Insert ContentValues into database and get a row ID back
+        long weatherRowId;
+        weatherRowId = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, weatherValues);
+        assertTrue("Error: Failure to insert test data", weatherRowId != -1);
         // Query the database and receive a Cursor back
-
+        Cursor cursor = db.query(WeatherContract.WeatherEntry.TABLE_NAME,null,
+                WeatherContract.WeatherEntry._ID + "=?",
+                new String[]{String.valueOf(weatherRowId)},
+                null,null,null);
         // Move the cursor to a valid database row
-
+        assertTrue("Error: Failure during move cursor", cursor.moveToFirst());
         // Validate data in resulting Cursor with the original ContentValues
         // (you can use the validateCurrentRecord function in TestUtilities to validate the
         // query if you like)
-
+        assertTrue("Error: Failure to query test data",
+                cursor.getDouble(cursor.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_DEGREES))
+                        ==1.1);
+        assertFalse("Error: Failure cursor has more than one entry", cursor.moveToNext());
         // Finally, close the cursor and database
+        cursor.close();
+        db.close();
     }
 }
