@@ -154,7 +154,7 @@ public class TestDb extends AndroidTestCase {
         assertFalse("Error: Failure cursor has more than one entry", cursor.moveToNext());
         // Finally, close the cursor and database
         cursor.close();
-        db.close();
+        dbHelper.close();
         // Return the rowId of the inserted location, or "-1" on failure.
         return locationRowId;
     }
@@ -212,6 +212,6 @@ public class TestDb extends AndroidTestCase {
         assertFalse("Error: Failure cursor has more than one entry", cursor.moveToNext());
         // Finally, close the cursor and database
         cursor.close();
-        db.close();
+        dbHelper.close();
     }
 }
