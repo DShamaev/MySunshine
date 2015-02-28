@@ -22,7 +22,6 @@ import com.example.hikimori911.sunshine.app.data.WeatherContract;
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-    public static final String SERVER_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
     private static final int FORECAST_LOADER = 0;
 
     public ForecastFragment() {
