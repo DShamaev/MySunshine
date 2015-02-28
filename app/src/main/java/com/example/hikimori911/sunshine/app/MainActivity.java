@@ -1,10 +1,8 @@
 package com.example.hikimori911.sunshine.app;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -91,9 +89,9 @@ public class MainActivity extends ActionBarActivity {
             return true;
         }else if (id == R.id.action_location) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            String location = Utility.getPreferredLocation(this);
             Uri.Builder builder = Uri.parse("geo:0,0").buildUpon()
-                    .appendQueryParameter("q",prefs.getString(getString(R.string.pref_location_key),getString(R.string.pref_location_default)));
+                    .appendQueryParameter("q",location);
             intent.setData(builder.build());
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
