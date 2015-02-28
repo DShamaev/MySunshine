@@ -36,9 +36,17 @@
         </activity>
 
         <provider android:authorities="com.example.android.sunshine.app"
-            android:name=".data.WeatherProvider">
+            android:name=".data.WeatherProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="com.example.hikimori911.sunshine.USE_PROVIDER">
         </provider>
 
     </application>
+
+    <permission android:name="com.example.hikimori911.sunshine.USE_PROVIDER"
+            android:protectionLevel="dangerous"
+            android:label="Dangerous permission"
+        />
 
 </manifest>
