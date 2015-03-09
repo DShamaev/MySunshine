@@ -71,15 +71,15 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mDayText = (TextView)getView().findViewById(R.id.list_item_day_textview);
-        mDateText = (TextView)getView().findViewById(R.id.list_item_date_textview);
-        mMaxTempText = (TextView)getView().findViewById(R.id.list_item_high_textview);
-        mMinTempText = (TextView)getView().findViewById(R.id.list_item_low_textview);
-        mWeatherIcon = (ImageView)getView().findViewById(R.id.list_item_icon);
-        mForecastText = (TextView)getView().findViewById(R.id.list_item_forecast_textview);
-        mHumidityText = (TextView)getView().findViewById(R.id.list_item_humidity_textview);
-        mWindText = (TextView)getView().findViewById(R.id.list_item_wind_textview);
-        mPressureText = (TextView)getView().findViewById(R.id.list_item_pressure_textview);
+        mDayText = (TextView)rootView.findViewById(R.id.list_item_day_textview);
+        mDateText = (TextView)rootView.findViewById(R.id.list_item_date_textview);
+        mMaxTempText = (TextView)rootView.findViewById(R.id.list_item_high_textview);
+        mMinTempText = (TextView)rootView.findViewById(R.id.list_item_low_textview);
+        mWeatherIcon = (ImageView)rootView.findViewById(R.id.list_item_icon);
+        mForecastText = (TextView)rootView.findViewById(R.id.list_item_forecast_textview);
+        mHumidityText = (TextView)rootView.findViewById(R.id.list_item_humidity_textview);
+        mWindText = (TextView)rootView.findViewById(R.id.list_item_wind_textview);
+        mPressureText = (TextView)rootView.findViewById(R.id.list_item_pressure_textview);
         return rootView;
     }
 
@@ -134,8 +134,8 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
         double low = data.getDouble(COL_WEATHER_MIN_TEMP);
         mMinTempText.setText(Utility.formatTemperature(getActivity(),low, isMetric));
 
-        int weatherId = data.getInt(COL_WEATHER_CONDITION_ID);
-        mWeatherIcon.setImageResource(R.drawable.ic_launcher);
+        int weatherCondId = data.getInt(COL_WEATHER_CONDITION_ID);
+        mWeatherIcon.setImageResource(Utility.getArtResourceForWeatherCondition(weatherCondId));
 
         String desc = data.getString(COL_WEATHER_DESC);
         mForecastText.setText(desc);
@@ -149,7 +149,7 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
 
         double pressure = data.getDouble(COL_WEATHER_PRESSURE);
         mPressureText.setText(getActivity().getString(R.string.format_pressure,pressure));
-        
+
         String dateString = Utility.formatDate(
                 data.getLong(COL_WEATHER_DATE));
         mForecastStr = String.format("%s - %s - %s/%s", dateString, desc, high, low);
