@@ -1,6 +1,5 @@
 package com.example.hikimori911.sunshine.app;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +22,13 @@ import com.example.hikimori911.sunshine.app.data.WeatherContract;
  * Created by hikimori911 on 08.02.2015.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
+    }
 
     private static final int FORECAST_LOADER = 0;
     private static final String[] FORECAST_COLUMNS = {
@@ -60,6 +66,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     protected ListView forecastList;
     private ForecastAdapter mForecastAdapter;
+    public Callback mCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -81,13 +88,11 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
-                if (cursor != null) {
+                if (cursor != null && mCallback != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
-                    Intent intent = new Intent(getActivity(), DetailActivity.class)
-                            .setData(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
-                                    locationSetting, cursor.getLong(COL_WEATHER_DATE)
-                            ));
-                    startActivity(intent);
+                    mCallback.onItemSelected(WeatherContract.WeatherEntry.buildWeatherLocationWithDate(
+                            locationSetting, cursor.getLong(COL_WEATHER_DATE)
+                    ));
                 }
             }
         });

@@ -2,6 +2,7 @@ package com.example.hikimori911.sunshine.app;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -50,6 +51,7 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
     static final int COL_WEATHER_CONDITION_ID = 9;
 
     public static final String HASHTAG_SUFFIX = " #SunshineApp";
+    public static final String URI_KEY = "URI_KEY";
 
     protected ShareActionProvider mShareActionProvider;
     public String mForecastStr;
@@ -64,12 +66,18 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
     protected TextView mWindText;
     protected TextView mPressureText;
 
+    protected Uri mUri;
+
     public DetailFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        if(args!=null && args.containsKey(URI_KEY)){
+            mUri = (Uri)args.get(URI_KEY);
+        }
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         mDayText = (TextView)rootView.findViewById(R.id.list_item_day_textview);
         mDateText = (TextView)rootView.findViewById(R.id.list_item_date_textview);
@@ -108,11 +116,11 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Intent intent = getActivity().getIntent();
-        if (intent == null) {
+        if (mUri == null) {
             return null;
         }
 
-        return new CursorLoader(getActivity(), intent.getData(),
+        return new CursorLoader(getActivity(), mUri,
                 FORECAST_COLUMNS,null, null,
                 null);
     }
@@ -168,5 +176,16 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 mForecastStr + HASHTAG_SUFFIX);
         return shareIntent;
+    }
+
+    void onLocationChanged( String newLocation ) {
+        // replace the uri, since the location has changed
+        Uri uri = mUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            mUri = updatedUri;
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
     }
 }
