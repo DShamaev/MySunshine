@@ -61,12 +61,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_COORD_LAT = 7;
     static final int COL_COORD_LONG = 8;
 
+    static final String POSITION_KEY = "POSITION_KEY";
+
     public ForecastFragment() {
     }
 
     protected ListView forecastList;
     private ForecastAdapter mForecastAdapter;
     public Callback mCallback;
+    protected int selectedIndex;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -87,6 +90,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // CursorAdapter returns a cursor at the correct position for getItem(), or null
                 // if it cannot seek to that position.
+                selectedIndex = position;
                 Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
                 if (cursor != null && mCallback != null) {
                     String locationSetting = Utility.getPreferredLocation(getActivity());
@@ -96,7 +100,21 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                 }
             }
         });
+
+        selectedIndex = -1;
+        if(savedInstanceState != null && savedInstanceState.containsKey(POSITION_KEY)){
+            selectedIndex = savedInstanceState.getInt(POSITION_KEY);
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if(selectedIndex != -1){
+            outState.putInt(POSITION_KEY,selectedIndex);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -151,6 +169,9 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // Swap the new cursor in.  (The framework will take care of closing the
         // old cursor once we return.)
         mForecastAdapter.swapCursor(data);
+        if(selectedIndex != -1){
+            forecastList.smoothScrollToPosition(selectedIndex);
+        }
     }
 
     public void onLoaderReset(Loader<Cursor> loader) {
