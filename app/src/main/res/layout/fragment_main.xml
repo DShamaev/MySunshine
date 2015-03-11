@@ -1,12 +1,7 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listview_forecast"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity$ForecastFragment"
-    android:id="@+id/weather_detail_container">
-    <ListView
-        android:id="@+id/listview_forecast"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/ForecastListStyle"
-        />
-</FrameLayout>
+    style="@style/ForecastListStyle"
+    />

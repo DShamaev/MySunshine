@@ -19,7 +19,7 @@ public class DetailActivity extends ActionBarActivity {
             bundle.putParcelable(DetailFragment.URI_KEY,getIntent().getData());
             df.setArguments(bundle);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.weather_detail_container, df)
+                    .add(R.id.container, df)
                     .commit();
         }
     }
