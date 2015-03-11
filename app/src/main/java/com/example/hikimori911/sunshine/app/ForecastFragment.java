@@ -1,5 +1,6 @@
 package com.example.hikimori911.sunshine.app;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,10 +72,20 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public Callback mCallback;
     protected int selectedIndex;
 
+    private boolean useTodayLayout;
+
+    public void setUseTodayLayout(boolean useTodayLayout){
+        this.useTodayLayout = useTodayLayout;
+        if (mForecastAdapter != null) {
+            mForecastAdapter.setUseTodayLayout(useTodayLayout);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        this.useTodayLayout = false;
     }
 
     @Override
@@ -82,6 +93,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
+        mForecastAdapter.setUseTodayLayout(useTodayLayout);
         forecastList = (ListView)rootView.findViewById(R.id.listview_forecast);
         forecastList.setAdapter(mForecastAdapter);
         forecastList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

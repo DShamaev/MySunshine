@@ -79,15 +79,15 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
             mUri = (Uri)args.get(URI_KEY);
         }
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
-        mDayText = (TextView)rootView.findViewById(R.id.list_item_day_textview);
-        mDateText = (TextView)rootView.findViewById(R.id.list_item_date_textview);
-        mMaxTempText = (TextView)rootView.findViewById(R.id.list_item_high_textview);
-        mMinTempText = (TextView)rootView.findViewById(R.id.list_item_low_textview);
-        mWeatherIcon = (ImageView)rootView.findViewById(R.id.list_item_icon);
-        mForecastText = (TextView)rootView.findViewById(R.id.list_item_forecast_textview);
-        mHumidityText = (TextView)rootView.findViewById(R.id.list_item_humidity_textview);
-        mWindText = (TextView)rootView.findViewById(R.id.list_item_wind_textview);
-        mPressureText = (TextView)rootView.findViewById(R.id.list_item_pressure_textview);
+        mDayText = (TextView)rootView.findViewById(R.id.detail_day_textview);
+        mDateText = (TextView)rootView.findViewById(R.id.detail_date_textview);
+        mMaxTempText = (TextView)rootView.findViewById(R.id.detail_high_textview);
+        mMinTempText = (TextView)rootView.findViewById(R.id.detail_low_textview);
+        mWeatherIcon = (ImageView)rootView.findViewById(R.id.detail_icon);
+        mForecastText = (TextView)rootView.findViewById(R.id.detail_forecast_textview);
+        mHumidityText = (TextView)rootView.findViewById(R.id.detail_humidity_textview);
+        mWindText = (TextView)rootView.findViewById(R.id.detail_wind_textview);
+        mPressureText = (TextView)rootView.findViewById(R.id.detail_pressure_textview);
         return rootView;
     }
 
