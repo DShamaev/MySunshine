@@ -1,5 +1,8 @@
 package com.example.hikimori911.sunshine.app;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -31,6 +34,10 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
          */
         public void onItemSelected(Uri dateUri);
     }
+
+    private final int ALARM_INTERVAL = 5; //secs
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
     private static final int FORECAST_LOADER = 0;
     private static final String[] FORECAST_COLUMNS = {
@@ -155,8 +162,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        Intent intent = new Intent(getActivity(), SunshineService.class);
-        getActivity().startService(intent);
+
+        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+
+        Intent wakeupIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
+        alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, wakeupIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        alarmMgr.set(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() +
+                        ALARM_INTERVAL * 1000, alarmIntent);
     }
 
     // since we read the location when we create the loader, all we need to do is restart things

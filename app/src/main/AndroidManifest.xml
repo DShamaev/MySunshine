@@ -46,6 +46,8 @@
 
         <service android:name=".service.SunshineService" />
 
+        <receiver android:name=".service.SunshineService$AlarmReceiver" android:enabled="true"/>
+
     </application>
 
     <permission android:name="com.example.hikimori911.sunshine.USE_PROVIDER"

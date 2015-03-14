@@ -1,15 +1,16 @@
 package com.example.hikimori911.sunshine.app.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.format.Time;
 import android.util.Log;
 
-import com.example.hikimori911.sunshine.app.FetchWeatherTask;
 import com.example.hikimori911.sunshine.app.Utility;
 import com.example.hikimori911.sunshine.app.data.WeatherContract;
 
@@ -30,13 +31,14 @@ import java.util.Vector;
  */
 public class SunshineService extends IntentService {
     private final String LOG_TAG = SunshineService.class.getSimpleName();
+
     public SunshineService(){
         super("Sunshine");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getApplicationContext());
+
         String location = Utility.getPreferredLocation(getApplicationContext());
 
         // These two need to be declared outside the try/catch
@@ -299,6 +301,14 @@ public class SunshineService extends IntentService {
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage(), e);
             e.printStackTrace();
+        }
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent sendIntent = new Intent(context, SunshineService.class);
+            context.startService(sendIntent);
         }
     }
 }
