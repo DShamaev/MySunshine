@@ -20,6 +20,8 @@
     <string name="pref_units_type_metric">Metric</string>
     <string name="pref_units_type_imperial">Imperial</string>
 
+    <string name="weather_icon">Weather icon</string>
+
     <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
     <string name="today">Today</string>
 
