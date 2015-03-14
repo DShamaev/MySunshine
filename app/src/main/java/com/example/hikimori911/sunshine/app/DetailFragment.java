@@ -142,11 +142,12 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
         double low = data.getDouble(COL_WEATHER_MIN_TEMP);
         mMinTempText.setText(Utility.formatTemperature(getActivity(),low, isMetric));
 
-        int weatherCondId = data.getInt(COL_WEATHER_CONDITION_ID);
-        mWeatherIcon.setImageResource(Utility.getArtResourceForWeatherCondition(weatherCondId));
-
         String desc = data.getString(COL_WEATHER_DESC);
         mForecastText.setText(desc);
+
+        int weatherCondId = data.getInt(COL_WEATHER_CONDITION_ID);
+        mWeatherIcon.setImageResource(Utility.getArtResourceForWeatherCondition(weatherCondId));
+        mWeatherIcon.setContentDescription(desc);
 
         double humidity = data.getDouble(COL_WEATHER_HUMIDITY);
         mHumidityText.setText(getActivity().getString(R.string.format_humidity,humidity));
