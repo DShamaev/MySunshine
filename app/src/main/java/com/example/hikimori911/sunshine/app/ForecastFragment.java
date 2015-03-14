@@ -1,6 +1,6 @@
 package com.example.hikimori911.sunshine.app;
 
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.hikimori911.sunshine.app.data.WeatherContract;
+import com.example.hikimori911.sunshine.app.service.SunshineService;
 
 /**
  * Created by hikimori911 on 08.02.2015.
@@ -154,9 +155,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void updateWeather() {
-        FetchWeatherTask weatherTask = new FetchWeatherTask(getActivity());
-        String location = Utility.getPreferredLocation(getActivity());
-        weatherTask.execute(location);
+        Intent intent = new Intent(getActivity(), SunshineService.class);
+        getActivity().startService(intent);
     }
 
     // since we read the location when we create the loader, all we need to do is restart things

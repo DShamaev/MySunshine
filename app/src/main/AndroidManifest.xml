@@ -44,6 +44,8 @@
             android:permission="com.example.hikimori911.sunshine.USE_PROVIDER">
         </provider>
 
+        <service android:name=".service.SunshineService" />
+
     </application>
 
     <permission android:name="com.example.hikimori911.sunshine.USE_PROVIDER"
