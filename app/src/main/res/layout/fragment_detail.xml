@@ -108,5 +108,10 @@
                 android:layout_width="match_parent"
                 android:textAppearance="?android:textAppearanceLarge" />
         </LinearLayout>
+        
+        <com.example.hikimori911.sunshine.app.views.MyView
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:id="@+id/detail_myview"/>
     </LinearLayout>
 </ScrollView>

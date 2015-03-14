@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.hikimori911.sunshine.app.data.WeatherContract;
+import com.example.hikimori911.sunshine.app.views.MyView;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -67,6 +68,7 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
     protected TextView mPressureText;
 
     protected Uri mUri;
+    protected MyView myView;
 
     public DetailFragment() {
     }
@@ -88,6 +90,7 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
         mHumidityText = (TextView)rootView.findViewById(R.id.detail_humidity_textview);
         mWindText = (TextView)rootView.findViewById(R.id.detail_wind_textview);
         mPressureText = (TextView)rootView.findViewById(R.id.detail_pressure_textview);
+        myView = (MyView)rootView.findViewById(R.id.detail_myview);
         return rootView;
     }
 
@@ -154,6 +157,7 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
 
         float windSpeed = data.getFloat(COL_WEATHER_WIND_SPEED);
         float degrees = data.getFloat(COL_WEATHER_DEGREES);
+        myView.setDegrees((int)degrees);
         mWindText.setText(Utility.getFormattedWind(getActivity(),windSpeed,degrees));
 
         double pressure = data.getDouble(COL_WEATHER_PRESSURE);
