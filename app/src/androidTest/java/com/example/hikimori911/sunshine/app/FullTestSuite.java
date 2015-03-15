@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.android.sunshine.app;
+package com.example.hikimori911.sunshine.app;
 
 import android.test.suitebuilder.TestSuiteBuilder;
 
