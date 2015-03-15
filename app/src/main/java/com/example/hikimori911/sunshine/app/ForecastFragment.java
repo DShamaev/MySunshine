@@ -2,6 +2,7 @@ package com.example.hikimori911.sunshine.app;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,7 +27,7 @@ import com.example.hikimori911.sunshine.app.sync.SunshineSyncAdapter;
  * Created by hikimori911 on 08.02.2015.
  */
 public class ForecastFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
-
+    public final String LOG_TAG = ForecastFragment.class.getSimpleName();
     public interface Callback {
         /**
          * DetailFragmentCallback for when an item has been selected.
@@ -151,11 +153,44 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.action_refresh:
-                updateWeather();
+            case  R.id.action_map_location:
+                /*Intent intent = new Intent(Intent.ACTION_VIEW);
+                String location = Utility.getPreferredLocation(getActivity());
+                Uri.Builder builder = Uri.parse("geo:0,0").buildUpon()
+                        .appendQueryParameter("q",location);
+                intent.setData(builder.build());
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                }*/
+                openPreferredLocationInMap();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void openPreferredLocationInMap() {
+        // Using the URI scheme for showing a location found on a map.  This super-handy
+        // intent can is detailed in the "Common Intents" page of Android's developer site:
+        // http://developer.android.com/guide/components/intents-common.html#Maps
+        if ( null != mForecastAdapter ) {
+            Cursor c = mForecastAdapter.getCursor();
+            if ( null != c ) {
+                c.moveToPosition(0);
+                String posLat = c.getString(COL_COORD_LAT);
+                String posLong = c.getString(COL_COORD_LONG);
+                Uri geoLocation = Uri.parse("geo:" + posLat + "," + posLong);
+
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(geoLocation);
+
+                if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    Log.d(LOG_TAG, "Couldn't call " + geoLocation.toString() + ", no receiving apps installed!");
+                }
+            }
+
         }
     }
 
