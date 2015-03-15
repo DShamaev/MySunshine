@@ -2,8 +2,6 @@ package com.example.hikimori911.sunshine.app;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,7 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.hikimori911.sunshine.app.data.WeatherContract;
-import com.example.hikimori911.sunshine.app.service.SunshineService;
+import com.example.hikimori911.sunshine.app.sync.SunshineSyncAdapter;
 
 /**
  * Created by hikimori911 on 08.02.2015.
@@ -163,14 +161,16 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
 
     private void updateWeather() {
 
-        alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        /*alarmMgr = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
 
         Intent wakeupIntent = new Intent(getActivity(), SunshineService.AlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(getActivity(), 0, wakeupIntent, PendingIntent.FLAG_ONE_SHOT);
 
         alarmMgr.set(AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis() +
-                        ALARM_INTERVAL * 1000, alarmIntent);
+                        ALARM_INTERVAL * 1000, alarmIntent);*/
+
+        SunshineSyncAdapter.syncImmediately(getActivity());
     }
 
     // since we read the location when we create the loader, all we need to do is restart things
