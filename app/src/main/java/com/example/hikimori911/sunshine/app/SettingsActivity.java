@@ -2,8 +2,11 @@ package com.example.hikimori911.sunshine.app;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -50,6 +53,7 @@ public class SettingsActivity extends PreferenceActivity
         // TODO: Add preferences
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_units_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_notifications_key)));
     }
 
     /**
@@ -81,9 +85,15 @@ public class SettingsActivity extends PreferenceActivity
             if (prefIndex >= 0) {
                 preference.setSummary(listPreference.getEntries()[prefIndex]);
             }
-        } else {
+        } else if (preference instanceof EditTextPreference) {
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
+        } else if (preference instanceof CheckBoxPreference) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = prefs.edit();
+            String notificationsKey = getString(R.string.pref_notifications_enabled);
+            editor.putBoolean(notificationsKey, ((CheckBoxPreference) preference).isChecked());
+            editor.commit();
         }
         return true;
     }

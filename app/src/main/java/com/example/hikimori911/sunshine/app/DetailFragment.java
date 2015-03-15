@@ -139,11 +139,11 @@ public class DetailFragment extends Fragment  implements LoaderManager.LoaderCal
 
         // Read high temperature from cursor
         double high = data.getDouble(COL_WEATHER_MAX_TEMP);
-        mMaxTempText.setText(Utility.formatTemperature(getActivity(),high, isMetric));
+        mMaxTempText.setText(Utility.formatTemperature(getActivity(),high));
 
         // Read low temperature from cursor
         double low = data.getDouble(COL_WEATHER_MIN_TEMP);
-        mMinTempText.setText(Utility.formatTemperature(getActivity(),low, isMetric));
+        mMinTempText.setText(Utility.formatTemperature(getActivity(),low));
 
         String desc = data.getString(COL_WEATHER_DESC);
         mForecastText.setText(desc);
