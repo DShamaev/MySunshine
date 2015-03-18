@@ -91,7 +91,7 @@ public class MyView extends View {
 
         //degree to radians
         if(degrees != -1) {
-            float angle = (float) (degrees * Math.PI / 180);
+            float angle = (float) ((90-degrees) * Math.PI / 180);
             //draw direction line
             paint.setColor(Color.RED);
             paint.setStrokeWidth(10);
